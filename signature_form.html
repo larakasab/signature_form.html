@@ -1,0 +1,56 @@
+!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+</head>
+<body>
+  <form id="myForm">
+    <canvas id="signatureCanvas" width="400" height="200" style="border:2px solid black;"></canvas>
+    <br>
+    <button type="button" onclick="clearSignature()">Clear</button>
+    <input type="hidden" id="signatureInput" name="signature">
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+
+  <script>
+    var canvas = document.getElementById('signatureCanvas');
+    var ctx = canvas.getContext('2d');
+    var drawing = false;
+    var signatureInput = document.getElementById('signatureInput');
+
+    canvas.addEventListener('mousedown', function(e) {
+      drawing = true;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = 'black';
+      ctx.beginPath();
+      var x = e.pageX - canvas.offsetLeft;
+      var y = e.pageY - canvas.offsetTop;
+      ctx.moveTo(x, y);
+    });
+
+    canvas.addEventListener('mousemove', function(e) {
+      if (drawing) {
+        var x = e.pageX - canvas.offsetLeft;
+        var y = e.pageY - canvas.offsetTop;
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+    });
+
+    canvas.addEventListener('mouseup', function(e) {
+      if (drawing) {
+        drawing = false;
+        var dataURL = canvas.toDataURL();
+        signatureInput.value = dataURL;
+      }
+    });
+
+    function clearSignature() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      signatureInput.value = '';
+    }
+  </script>
+</body>
+</html>
